@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 @Controller
-@RequestMapping("/gui")
+@RequestMapping("/convertidor")
 public class WebGuiController {
 	
 	@Autowired
 	private CurrencyExchangeServiceProxy proxy;
 	
-	@RequestMapping(value="/",method=RequestMethod.GET)
+	@RequestMapping(value="",method=RequestMethod.GET)
 	public String raiz(Model model) {
 		model.addAttribute("currencys", proxy.allCurrency()); 
 		return "conversion";
