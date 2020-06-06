@@ -16,7 +16,7 @@ public class WebGuiController {
 	
 	@RequestMapping(value="/",method=RequestMethod.GET)
 	public String raiz(Model model) {
-		model.addAttribute("name", ""); 
+		model.addAttribute("currencys", proxy.allCurrency()); 
 		return "conversion";
 	}
 }

@@ -1,5 +1,9 @@
 package com.jaed.miforex;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +23,14 @@ public class ForexController {
 
 		ExchangeValue exchangeValue = repository.findByFromAndTo(from, to);
 		exchangeValue.setPort(Integer.parseInt(environment.getProperty("local.server.port")));
+		
+		
 
 		return exchangeValue;
+	}
+	
+	@GetMapping("/all_currency")
+	public List<String> allCurrency() {
+		return repository.findAllCurrency();
 	}
 }
