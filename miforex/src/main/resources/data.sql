@@ -30,6 +30,6 @@ values(10013,'USD','YUA',7.09,0);
 insert into exchange_value(id,currency_from,currency_to,conversion_multiple,port)
 values(10014,'EUR','YUA',8.02,0);
 insert into exchange_value(id,currency_from,currency_to,conversion_multiple,port)
-values(10015,'YUA','YUA'1.00,0);
+values(10015,'YUA','YUA',1.00,0);
 insert into exchange_value(id,currency_from,currency_to,conversion_multiple,port)
 values(10016,'PEN','YUA',2.05,0);
