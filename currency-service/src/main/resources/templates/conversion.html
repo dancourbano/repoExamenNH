@@ -13,7 +13,7 @@
          
         <div class="row">
           <div class="col-lg-6 col-md-7 col-sm-6">
-            
+            <div id="mensaje" class="" role="alert"></div>
 
 			<form method="post" enctype="multipart/form-data" class="form-horizontal">
             	<h1>Calculando Monedas</h1>
@@ -22,6 +22,7 @@
 	                    <label class="col-lg-3 control-label">Moneda Origen </label>
 	                    <div class="col-lg-9">
 	                    	<select class="form-control" id="origen">
+							  <option value="">Seleccione</option>
 							  <option value="USD">USD</option>
 							  <option value="PEN">PEN</option>
 							  <option value="YUA">YUA</option>
@@ -34,17 +35,18 @@
 	                    <label class="col-lg-3 control-label">Moneda Destino </label>
 	                    <div class="col-lg-9">
 	                    	<select class="form-control" id="destino">
-							  <option value="USD">USD</option>
-							  <option value="PEN">PEN</option>
-							  <option value="YUA">YUA</option>
-							  <option value="EUR">EUR</option>							   
+	                    		<option value="">Seleccione</option>
+							  	<option value="USD">USD</option>
+							  	<option value="PEN">PEN</option>
+							  	<option value="YUA">YUA</option>
+							  	<option value="EUR">EUR</option>							   
 							</select>
 	                    </div>
                 	</div>
                 	<div class="form-group">
 	                    <label class="col-lg-3 control-label">Importe: </label>
 	                    <div class="col-lg-9">
-	                    	<input type="text" class="form-control" id="importe"/>
+	                    	<input type="text" class="form-control" id="importe" oninput="valid(this)"  placeholder="00.00"/>
 	                    </div>
                 	</div>
                 	<div id="resultado" class="alert alert-info" role="alert" style="display: none;"></div>
@@ -65,21 +67,73 @@
 		var origen = $("#origen").val();
 		var destino = $("#destino").val();
 		var importe = $("#importe").val();
+		el_down.innerHTML = "";
+		$("#resultado").removeClass("alert alert-info");
+		$("#resultado").empty();
+		$("#mensaje").removeClass("alert alert-danger");		
+		$("#mensaje").empty();
 		
-		$.ajax({
-			url: '/currency-converter-feign/from/'+origen+'/to/'+destino+'/quantity/'+importe,			
-			type : 'GET',
-			success: function(data) {
-				var resultado = "El tipo de cambio de <b>"+data.from+"</b> a <b>"+data.to+"</b> es de  <b>"+data.conversionMultiple+"</b>. </br>"
-					resultado += "Para el monto solicitado de <b>"+data.quantity+"</b> la conversión es: <b>"+data.totalCalculatedAmount+"</b>";
-				$("#resultado").html(resultado);
-				$("#resultado").show();
-			},
-			error: function() {
-		        console.log("No se ha podido obtener la información");
-		    }
-		});
+		if(validacionCombosIguales() && validacionCamposVacios()){
+			$.ajax({
+				url: '/currency-converter-feign/from/'+origen+'/to/'+destino+'/quantity/'+importe,			
+				type : 'GET',
+				success: function(data) {
+					$("#resultado").addClass("alert alert-info");
+					var resultado = "El tipo de cambio de <b>"+data.from+"</b> a <b>"+data.to+"</b> es de  <b>"+data.conversionMultiple+"</b>. </br>"
+						resultado += "Para el monto solicitado de <b>"+data.quantity+"</b> la conversión es: <b>"+data.totalCalculatedAmount+"</b>";
+					$("#resultado").html(resultado);
+					$("#resultado").show();
+				},
+				error: function() {
+					showAlertDanger("Error al consultar Conversion<br/>");
+			    }
+			});
+		}
 	}
+	
+	var el_down = document.getElementById("mensaje");
+	 
+	 
+   	var RegExp = new RegExp(/^\d*\.?\d*$/); 
+   	var val = document.getElementById("importe").value; 
+
+   	function valid(elem) { 
+       if (RegExp.test(elem.value)) { 
+           val = elem.value; 
+       } else { 
+           elem.value = val; 
+       } 
+   	} 
+ 	function validacionCamposVacios(){
+ 		var validacionFlag=true;
+ 		 
+ 		if(!$.trim($("#origen").val()).length){
+ 			showAlertDanger("Debe seleccionar una moneda Origen <br/>");
+ 			validacionFlag=false;
+ 		}
+		if(!$.trim($("#destino").val()).length){
+			showAlertDanger("Debe seleccionar una moneda Destino <br/>");
+			validacionFlag=false;
+ 		}
+		if(!$.trim($("#importe").val()).length){
+			showAlertDanger("Debe ingresar un Importe <br/>");
+			validacionFlag=false;
+ 		}
+		
+		return validacionFlag;
+ 	}
+ 	function validacionCombosIguales(){
+ 		if($("#destino").val()==$("#origen").val() && $("#origen").val()!="" && $("#destino").val()!="" ){
+ 			showAlertDanger("Las monedas origen y destino debe ser diferentes<br/>");
+			return false;
+ 		}
+ 		return true;
+ 	}
+ 	function showAlertDanger(texto){
+ 		$("#mensaje").addClass("alert alert-danger");
+		$("#mensaje").append(texto);
+ 	}
+ 	 
 </script>
 </body>
 </html>
